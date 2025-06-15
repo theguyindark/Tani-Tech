@@ -49,7 +49,7 @@ A comprehensive agricultural platform built for Malaysian farmers, focusing on a
 
 | Mobile Alerts & Community | USSD Menu |
 |:------------------------:|:---------:|
-| ![Mobile Alerts](screenshots/mobile_alerts.png) | ![USSD](screenshots/ussd.png) |
+| ![Mobile Alerts](screenshots/amaran.png) | ![USSD](screenshots/ussd.png) |
 
 *Mobile experience: community alerts and USSD menu for basic phones*
 
