@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaniTech - Agricultural Data Wallet</title>
+    <meta name="description" content="Agricultural data wallet for farmers">
+    <meta name="theme-color" content="#198754">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        /* Add to Home Screen Prompt */
+        .add-to-home {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #198754;
+            color: white;
+            padding: 1rem;
+            display: none;
+            z-index: 1000;
+        }
+        .add-to-home.show {
+            display: block;
+        }
+        .summary-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.2rem 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .summary-num {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #198754;
+        }
+        .summary-label {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        .quick-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.2rem 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+            text-align: center;
+        }
+        .quick-card:hover {
+            box-shadow: 0 4px 16px rgba(25,135,84,0.10);
+        }
+        .icon-box {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.5rem auto;
+            border-radius: 50%;
+        }
+        .section-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .weather-card, .forecast-card {
+            background: #e9f7ef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(25,135,84,0.05);
+        }
+        .alert-card {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(255,193,7,0.08);
+        }
+        .activity-progress {
+            height: 6px;
+            border-radius: 3px;
+            background: #e9ecef;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        .activity-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: #198754;
+        }
+        .fab {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 4.5rem;
+            z-index: 1001;
+            background: #198754;
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 16px rgba(25,135,84,0.15);
+            border: none;
+            transition: background 0.2s;
+        }
+        .fab:hover {
+            background: #145c32;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-control, .form-select {
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
+        .btn {
+            font-size: 1.1rem;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+        .navbar .nav-btn {
+            font-size: 1.2rem;
+            color: #198754;
+            background: none;
+            border: none;
+            outline: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .navbar .nav-btn.active {
+            color: #fff;
+            background: #198754;
+            border-radius: 12px;
+            padding: 0.2rem 0.8rem;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+        /* Chatbot message bubbles */
+        .chatbot-bubble {
+            display: inline-block;
+            max-width: 90%;
+            word-break: break-word;
+            white-space: pre-line;
+            font-size: 1.15rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.25rem;
+        }
+        .chatbot-user {
+            background: #1976d2;
+            color: #fff;
+            text-align: right;
+            float: right;
+            clear: both;
+        }
+        .chatbot-bot {
+            background: #6c757d;
+            color: #fff;
+            text-align: left;
+            float: left;
+            clear: both;
+        }
+        #chatbotMessages {
+            flex: 1 1 auto;
+            min-height: 200px;
+            max-height: 50vh;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #chatbotInputBar {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            padding-top: 0.5rem;
+            padding-bottom: 1.5rem;
+            z-index: 2;
+        }
+        #chatbotInput {
+            resize: none;
+            min-height: 2.2em;
+            max-height: 6em;
+            font-size: 1.1rem;
+        }
+        @media (max-width: 600px) {
+            #chatbotScreen { height: 100dvh; }
+            #chatbotMessages { max-height: 40vh; }
+        }
+        .market-table-container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(25,135,84,0.10);
+            padding: 1.2rem 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+        .market-table {
+            background: transparent;
+            border-radius: 12px;
+            box-shadow: none;
+            font-size: 1.13rem;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        .market-table th {
+            background: #e9f7ef;
+            font-weight: 700;
+            color: #198754;
+            border-bottom: none;
+            padding: 0.85rem 1rem;
+            font-size: 1.08rem;
+            letter-spacing: 0.01em;
+        }
+        .market-table td {
+            background: #fff;
+            padding: 0.85rem 1rem;
+            border: none;
+            vertical-align: middle;
+            font-size: 1.08rem;
+        }
+        .market-table tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.18s;
+        }
+        .market-table tr:last-child {
+            border-bottom: none;
+        }
+        .market-table tbody tr:hover {
+            background: #f6fbf8;
+        }
+        @media (max-width: 600px) {
+            .market-table th, .market-table td { padding: 0.6rem 0.5rem; font-size: 1rem; }
+            .market-table-container { padding: 0.7rem 0.2rem; }
+        }
+        /* Amaran (Alerts) Page Enhancements */
+        #alertsScreen .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #198754;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #alertsScreen .weather-card, #alertsScreen .forecast-card, #alertsScreen .alert-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(25,135,84,0.06);
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            border: none;
+        }
+        #alertsScreen .alert-card {
+            background: #fffbe6;
+            border-left: 5px solid #ffc107;
+        }
+        #alertsScreen .community-alert-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(25,135,84,0.04);
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            border: none;
+        }
+        #alertsScreen .community-alert-card .badge {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        #alertsScreen .community-alert-card .province {
+            font-size: 0.95rem;
+            color: #198754;
+        }
+        #alertsScreen .community-alert-card .contact {
+            font-size: 0.95rem;
+            color: #6c757d;
+        }
+        #alertsScreen .community-alert-card .date {
+            font-size: 0.9rem;
+            color: #adb5bd;
+        }
+        #alertsScreen .mb-3, #alertsScreen .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+        #alertsScreen .form-select, #alertsScreen .btn, #alertsScreen input, #alertsScreen textarea {
+            font-size: 1.08rem;
+            border-radius: 10px;
+        }
+        @media (max-width: 600px) {
+            #alertsScreen .container { padding-left: 0.2rem; padding-right: 0.2rem; }
+            #alertsScreen .weather-card, #alertsScreen .forecast-card, #alertsScreen .alert-card, #alertsScreen .community-alert-card { padding: 0.8rem 0.6rem; }
+        }
+        .dashboard-greeting-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(133,137,53,0.10);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            max-width: 100%;
+        }
+        .greeting-flex {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .greeting-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #F6F3E7;
+            box-shadow: 0 2px 8px rgba(133,137,53,0.10);
+            object-fit: cover;
+        }
+        @media (max-width: 600px) {
+            .dashboard-greeting-card { padding: 1rem 0.7rem; }
+            .greeting-logo { width: 44px; height: 44px; }
+        }
+        /* Modern minimalist points section */
+        .points-modern-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 16px rgba(25,135,84,0.07);
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            border: none;
+        }
+        .points-modern-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.2rem 0;
+        }
+        .points-modern-col {
+            flex: 1 1 50%;
+            min-width: 220px;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .points-modern-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #b6e2c6 0%, #198754 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(25,135,84,0.10);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .points-modern-icon i {
+            font-size: 2.1rem;
+            color: #fff;
+        }
+        .points-modern-col:hover .points-modern-icon {
+            box-shadow: 0 8px 24px rgba(25,135,84,0.18);
+            transform: translateY(-2px) scale(1.05);
+        }
+        .points-modern-title {
+            font-size: 1.18rem;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+            color: #222;
+        }
+        .points-modern-desc {
+            font-size: 1.01rem;
+            color: #6c757d;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        @media (max-width: 600px) {
+            .points-modern-row { flex-direction: column; gap: 1.2rem 0; }
+            .points-modern-col { min-width: 0; }
+            .points-modern-card { padding: 1.2rem 0.7rem 1rem 0.7rem; }
+        }
+        /* Chatbot Modern Enhancements */
+        .chatbot-modern-container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(25,135,84,0.10);
+            padding: 1.5rem 1rem 1rem 1rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .chatbot-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.1rem;
+        }
+        .chatbot-avatar-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f6f3e7;
+            box-shadow: 0 2px 8px rgba(25,135,84,0.10);
+            border: 2px solid #b6e2c6;
+        }
+        .chatbot-greeting {
+            font-size: 1.08rem;
+            color: #198754;
+            font-weight: 600;
+        }
+        .chatbot-suggestions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .chatbot-chip {
+            background: #e9f7ef;
+            color: #198754;
+            border: none;
+            border-radius: 16px;
+            padding: 0.35rem 1rem;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .chatbot-chip:hover {
+            background: #d1e7dd;
+        }
+        .chatbot-modern-bubble {
+            display: inline-block;
+            max-width: 85%;
+            word-break: break-word;
+            white-space: pre-line;
+            font-size: 1.08rem;
+            padding: 0.6rem 1.1rem;
+            border-radius: 16px;
+            margin-bottom: 0.3rem;
+        }
+        .chatbot-modern-user {
+            background: #e3f0e8;
+            color: #198754;
+            text-align: right;
+            float: right;
+            clear: both;
+        }
+        .chatbot-modern-bot {
+            background: #f3f3f3;
+            color: #333;
+            text-align: left;
+            float: left;
+            clear: both;
+        }
+        .chatbot-modern-messages {
+            min-height: 180px;
+            max-height: 45vh;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.7rem;
+        }
+        .chatbot-modern-inputbar {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(25,135,84,0.06);
+            padding: 0.4rem 0.5rem 0.7rem 0.5rem;
+            position: relative;
+            gap: 0.2rem;
+        }
+        .chatbot-input-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .chatbot-modern-inputbar textarea {
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 1.08rem;
+            flex: 1 1 auto;
+            background: transparent;
+            min-height: 2.2em;
+            max-height: 6em;
+            margin: 0;
+        }
+        .chatbot-modern-send {
+            background: #b6e2c6;
+            color: #145c32;
+            border: none;
+            border-radius: 8px;
+            padding: 0.45rem 1.1rem;
+            font-weight: 700;
+            font-size: 1.01rem;
+            transition: background 0.15s;
+            margin-left: 0;
+        }
+        .chatbot-modern-send:hover {
+            background: #198754;
+            color: #fff;
+        }
+        .chatbot-modern-mic {
+            background: #e9f7ef;
+            border: none;
+            border-radius: 8px;
+            padding: 0.45rem 0.7rem;
+            color: #198754;
+            font-size: 1.2rem;
+            transition: background 0.15s, border 0.15s;
+            box-shadow: none;
+            margin: 0 auto;
+            display: block;
+        }
+        .chatbot-modern-mic:hover {
+            background: #b6e2c6;
+            color: #145c32;
+        }
+        @media (max-width: 600px) {
+            .chatbot-modern-inputbar { padding: 0.3rem 0.2rem 0.6rem 0.2rem; }
+            .chatbot-modern-send, .chatbot-modern-mic { font-size: 0.98rem; padding: 0.4rem 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="screen">
+        <div class="container py-4">
+            <div class="dashboard-greeting-card">
+                <div class="greeting-flex">
+                    <img src="logo.png" alt="Logo" class="greeting-logo" />
+                    <div>
+                        <h5 class="fw-bold mb-0">Hai, <span id="userName">Pak Kamal</span></h5>
+                        <div class="text-muted" id="todayDate"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center mb-4">
+                <div class="col">
+                    <div class="summary-card">
+                        <div class="summary-num" id="pendingCount">08</div>
+                        <div class="summary-label">Belum Selesai</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="summary-card">
+                        <div class="summary-num" id="progressCount">15</div>
+                        <div class="summary-label">Sedang Berjalan</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="summary-card">
+                        <div class="summary-num" id="completedCount">29</div>
+                        <div class="summary-label">Selesai</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('profileScreen')">
+                        <div class="icon-box bg-secondary bg-opacity-10 mb-2"><i class="bi bi-person"></i></div>
+                        <div>Profil</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('activityScreen')">
+                        <div class="icon-box bg-success bg-opacity-10 mb-2"><i class="bi bi-list-task"></i></div>
+                        <div>Aktiviti Saya</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('rewardsScreen')">
+                        <div class="icon-box bg-info bg-opacity-10 mb-2"><i class="bi bi-gift"></i></div>
+                        <div>Ganjaran</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('marketScreen')">
+                        <div class="icon-box bg-warning bg-opacity-10 mb-2"><i class="bi bi-bar-chart"></i></div>
+                        <div>Pasaran Terkini</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('chatbotScreen')">
+                        <div class="icon-box bg-primary bg-opacity-10 mb-2"><i class="bi bi-robot"></i></div>
+                        <div>Tanya TanamAI</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="quick-card" onclick="showScreen('alertsScreen')">
+                        <div class="icon-box bg-warning bg-opacity-10 mb-2"><i class="bi bi-bell"></i></div>
+                        <div>Amaran</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success w-100" onclick="showScreen('logActivityScreen')">Log Aktiviti Baharu</button>
+        </div>
+    </div>
+
+    <!-- Activity List Screen -->
+    <div id="activityScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Aktiviti Saya</h5>
+            </div>
+            <ul class="nav nav-pills mb-3" id="activityTabs">
+                <li class="nav-item"><a class="nav-link active" href="#" onclick="filterActivities('all')">Semua</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterActivities('aktiviti')">Aktiviti</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterActivities('cadangan')">Cadangan</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterActivities('completed')">Selesai</a></li>
+            </ul>
+            <div id="activityList">
+                <!-- Activity cards will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profileScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Profil</h5>
+            </div>
+            <div class="text-center mb-3">
+                <img src="pak_kamal.png" class="rounded-circle mb-2" width="80" height="80" alt="Avatar">
+                <h6 id="profileName">Pak Kamal</h6>
+                <div class="text-muted" id="profilePhone">+60 12-345 6789</div>
+                <div class="text-muted" id="profileRegion">Kedah</div>
+            </div>
+            <div class="text-center mb-4">
+                <div class="d-flex justify-content-center">
+                  <div class="p-3 bg-success bg-opacity-10 rounded" style="display:inline-block;">
+                    <div id="qrCode"></div>
+                  </div>
+                </div>
+                <div class="small text-muted">Imbas untuk lihat dompet data saya</div>
+            </div>
+            <div class="list-group mb-4">
+                <button class="list-group-item list-group-item-action">Tetapan Bahasa</button>
+                <button class="list-group-item list-group-item-action">Tukar Kata Laluan</button>
+                <button class="list-group-item list-group-item-action">Dasar Privasi</button>
+                <button class="list-group-item list-group-item-action">Terma dan Syarat</button>
+            </div>
+            <button class="btn btn-outline-danger w-100">Log Keluar</button>
+        </div>
+    </div>
+
+    <!-- Log Activity Screen -->
+    <div id="logActivityScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Log Aktiviti Baharu</h5>
+            </div>
+            <form id="logActivityForm" class="mb-3">
+                <div class="mb-2">
+                    <label for="cropType" class="form-label">Jenis Tanaman</label>
+                    <select id="cropType" class="form-select" required>
+                        <option value="">Pilih tanaman</option>
+                        <option value="Padi">Padi</option>
+                        <option value="Sawit">Sawit</option>
+                        <option value="Getah">Getah</option>
+                        <option value="Sayur">Sayur</option>
+                        <option value="Buah">Buah</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="quantity" class="form-label">Kuantiti (kg)</label>
+                    <input type="number" id="quantity" class="form-control" min="1" required>
+                </div>
+                <div class="mb-2">
+                    <label for="notes" class="form-label">Deskripsi (pilihan)</label>
+                    <textarea id="notes" class="form-control" rows="3" style="min-height:80px;"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="audioInput" class="form-label">Muat Naik Audio (Melayu):</label>
+                    <input type="file" id="audioInput" name="audio" class="form-control" accept="audio/*">
+                </div>
+                <div class="mb-2">
+                    <button type="button" id="micBtn" class="btn btn-outline-secondary">
+                        <i class="bi bi-mic"></i> Tekan untuk Rakam
+                    </button>
+                    <span id="micStatus" class="ms-2 text-muted small"></span>
+                </div>
+                <button type="button" id="transcribeBtn" class="btn btn-primary mb-2">Transkripsi</button>
+                <div id="transcribeResult" class="mt-2"></div>
+                <button type="submit" class="btn btn-success w-100">Log Aktiviti</button>
+                <div id="logActivityMsg" class="mt-2"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alerts Screen (with state selector) -->
+    <div id="alertsScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Amaran</h5>
+            </div>
+            <div class="mb-3">
+                <select id="stateSelect" class="form-select">
+                    <option value="">All Malaysia</option>
+                    <option value="Johor">Johor</option>
+                    <option value="Kedah">Kedah</option>
+                    <option value="Kelantan">Kelantan</option>
+                    <option value="Melaka">Melaka</option>
+                    <option value="Negeri Sembilan">Negeri Sembilan</option>
+                    <option value="Pahang">Pahang</option>
+                    <option value="Perak">Perak</option>
+                    <option value="Perlis">Perlis</option>
+                    <option value="Pulau Pinang">Pulau Pinang</option>
+                    <option value="Sabah">Sabah</option>
+                    <option value="Sarawak">Sarawak</option>
+                    <option value="Selangor">Selangor</option>
+                    <option value="Terengganu">Terengganu</option>
+                    <option value="W.P. Kuala Lumpur">W.P. Kuala Lumpur</option>
+                    <option value="W.P. Labuan">W.P. Labuan</option>
+                    <option value="W.P. Putrajaya">W.P. Putrajaya</option>
+                </select>
+            </div>
+            <!-- Section Header: Weather Warnings -->
+            <div class="section-header"><i class="bi bi-exclamation-triangle"></i> Amaran Cuaca</div>
+            <div class="mb-3" id="weatherWarningsDisplay"></div>
+            <!-- Section Header: Weather Forecast -->
+            <div class="section-header"><i class="bi bi-cloud-sun"></i> Ramalan Cuaca</div>
+            <div class="mb-3" id="forecastDisplay"></div>
+            <!-- Section Header: Community Alerts -->
+            <div class="section-header"><i class="bi bi-people"></i> Amaran Komuniti</div>
+            <button class="btn btn-outline-success w-100 mb-3" data-bs-toggle="modal" data-bs-target="#submitAlertModal">Hantar Amaran Komuniti</button>
+            <div class="mb-3" id="communityAlertsSection">
+              <div id="communityAlertsList" class="list-group"></div>
+            </div>
+            <!-- Community Alert Modal -->
+            <div class="modal fade" id="submitAlertModal" tabindex="-1" aria-labelledby="submitAlertModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form id="submitAlertForm">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="submitAlertModalLabel">Hantar Amaran Komuniti</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2">
+                        <label for="alertType" class="form-label">Jenis Amaran</label>
+                        <select id="alertType" class="form-select" required>
+                          <option value="">Pilih jenis</option>
+                          <option value="Pest">Perosak</option>
+                          <option value="Market">Pasaran</option>
+                          <option value="Event">Acara</option>
+                          <option value="Other">Lain-lain</option>
+                        </select>
+                      </div>
+                      <div class="mb-2">
+                        <label for="alertMessage" class="form-label">Mesej</label>
+                        <textarea id="alertMessage" class="form-control" rows="2" required></textarea>
+                      </div>
+                      <div class="mb-2">
+                        <label for="alertState" class="form-label">Negeri (pilihan)</label>
+                        <select id="alertState" class="form-select">
+                          <option value="">All Malaysia</option>
+                          <option value="Johor">Johor</option>
+                          <option value="Kedah">Kedah</option>
+                          <option value="Kelantan">Kelantan</option>
+                          <option value="Melaka">Melaka</option>
+                          <option value="Negeri Sembilan">Negeri Sembilan</option>
+                          <option value="Pahang">Pahang</option>
+                          <option value="Perak">Perak</option>
+                          <option value="Perlis">Perlis</option>
+                          <option value="Pulau Pinang">Pulau Pinang</option>
+                          <option value="Sabah">Sabah</option>
+                          <option value="Sarawak">Sarawak</option>
+                          <option value="Selangor">Selangor</option>
+                          <option value="Terengganu">Terengganu</option>
+                          <option value="W.P. Kuala Lumpur">W.P. Kuala Lumpur</option>
+                          <option value="W.P. Labuan">W.P. Labuan</option>
+                          <option value="W.P. Putrajaya">W.P. Putrajaya</option>
+                        </select>
+                      </div>
+                      <div class="mb-2">
+                        <label for="alertProvince" class="form-label">Daerah (pilihan)</label>
+                        <input type="text" id="alertProvince" class="form-control" placeholder="Enter province">
+                      </div>
+                      <div class="mb-2">
+                        <label for="alertContact" class="form-label">Maklumat Kontak (pilihan)</label>
+                        <input type="text" id="alertContact" class="form-control" placeholder="Phone or WhatsApp">
+                      </div>
+                      <div id="submitAlertMsg" class="mt-2"></div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                      <button type="submit" class="btn btn-success">Hantar Amaran</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Weather Warning Detail Modal -->
+            <div class="modal fade" id="weatherWarningModal" tabindex="-1" aria-labelledby="weatherWarningModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="weatherWarningModalLabel">Butiran Amaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="weatherWarningModalBody">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="smsPhone" class="form-label">Hantar amaran ini ke telefon anda:</label>
+              <div class="input-group">
+                <input type="tel" id="smsPhone" class="form-control" placeholder="+60123456789">
+                <button id="sendSmsBtn" class="btn btn-success" type="button">
+                  <i class="bi bi-chat-dots"></i> Hantar SMS
+                </button>
+              </div>
+              <div id="smsStatus" class="small mt-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rewards Screen (Placeholder) -->
+    <div id="rewardsScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Ganjaran</h5>
+            </div>
+            <div class="mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="card-title">Mata Anda</h6>
+                        <div id="rewardsPoints" style="font-size:2rem; font-weight:bold;">...</div>
+                        <div class="text-muted" id="rewardsLastLogged"></div>
+                        <div class="mt-4">
+                          <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold">Status Geran</span>
+                            <span id="grantStatusLabel" class="small text-success"></span>
+                          </div>
+                          <div class="progress" style="height: 18px; background: #e9ecef; border-radius: 9px;">
+                            <div id="grantStrengthBar" class="progress-bar bg-success" role="progressbar" style="width: 0%; border-radius: 9px; transition: width 0.5s;"></div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points Explanation Section -->
+            <div class="section-header mb-3"><i class="bi bi-info-circle"></i> Cara Kumpul Mata</div>
+            <div class="points-modern-card mb-4">
+                <div class="points-modern-row">
+                    <div class="points-modern-col">
+                        <div class="points-modern-icon"><i class="bi bi-calendar-check"></i></div>
+                        <div>
+                            <div class="points-modern-title">Log Aktiviti</div>
+                            <div class="points-modern-desc">+10 mata setiap log aktiviti</div>
+                        </div>
+                    </div>
+                    <div class="points-modern-col">
+                        <div class="points-modern-icon"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <div class="points-modern-title">Pengesahan Amaran</div>
+                            <div class="points-modern-desc">+5 mata setiap pengesahan</div>
+                        </div>
+                    </div>
+                    <div class="points-modern-col">
+                        <div class="points-modern-icon"><i class="bi bi-chat-dots"></i></div>
+                        <div>
+                            <div class="points-modern-title">Kongsi Pengalaman</div>
+                            <div class="points-modern-desc">+15 mata setiap perkongsian</div>
+                        </div>
+                    </div>
+                    <div class="points-modern-col">
+                        <div class="points-modern-icon"><i class="bi bi-graph-up"></i></div>
+                        <div>
+                            <div class="points-modern-title">Laporan Hasil</div>
+                            <div class="points-modern-desc">+20 mata setiap laporan</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points to Grant Conversion -->
+            <div class="section-header mb-3"><i class="bi bi-currency-exchange"></i> Penukaran Mata ke Geran</div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Jumlah Mata</th>
+                                    <th>Status</th>
+                                    <th>Keistimewaan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0 - 100</td>
+                                    <td><span class="badge bg-secondary">Pemula</span></td>
+                                    <td>Layak memohon geran kecil</td>
+                                </tr>
+                                <tr>
+                                    <td>101 - 500</td>
+                                    <td><span class="badge bg-primary">Aktif</span></td>
+                                    <td>Layak memohon geran sederhana</td>
+                                </tr>
+                                <tr>
+                                    <td>501 - 1000</td>
+                                    <td><span class="badge bg-success">Pakar</span></td>
+                                    <td>Layak memohon semua geran</td>
+                                </tr>
+                                <tr>
+                                    <td>1000+</td>
+                                    <td><span class="badge bg-warning">Elit</span></td>
+                                    <td>Keutamaan dalam permohonan geran</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Mata yang dikumpul menunjukkan komitmen anda dalam bidang pertanian dan meningkatkan peluang untuk mendapat geran.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Grants Section -->
+            <div class="section-header mb-3"><i class="bi bi-award"></i> Geran Tersedia</div>
+            
+            <!-- MAFI Grant -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title mb-1">Geran MAFI</h6>
+                            <p class="card-text text-muted small mb-2">Kementerian Pertanian dan Industri Makanan</p>
+                        </div>
+                        <span class="badge bg-success">RM 10,000</span>
+                    </div>
+                    <p class="card-text">Geran untuk usahawan tani yang ingin memulakan atau mengembangkan perniagaan pertanian.</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-success">Lihat Butiran</button>
+                        <button class="btn btn-sm btn-success">Mohon Sekarang</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEKUN Grant -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title mb-1">Geran TEKUN</h6>
+                            <p class="card-text text-muted small mb-2">Tabung Ekonomi Kumpulan Usaha Niaga</p>
+                        </div>
+                        <span class="badge bg-success">RM 20,000</span>
+                    </div>
+                    <p class="card-text">Pembiayaan untuk usahawan tani yang ingin mengembangkan perniagaan pertanian moden.</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-success">Lihat Butiran</button>
+                        <button class="btn btn-sm btn-success">Mohon Sekarang</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MARDI Grant -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title mb-1">Geran MARDI</h6>
+                            <p class="card-text text-muted small mb-2">Institut Penyelidikan dan Kemajuan Pertanian Malaysia</p>
+                        </div>
+                        <span class="badge bg-success">RM 15,000</span>
+                    </div>
+                    <p class="card-text">Geran untuk projek penyelidikan dan pembangunan dalam bidang pertanian.</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-success">Lihat Butiran</button>
+                        <button class="btn btn-sm btn-success">Mohon Sekarang</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Screen -->
+    <div id="chatbotScreen" class="screen d-none">
+        <div class="container py-4 d-flex flex-column align-items-center" style="min-height:100vh;">
+            <div class="chatbot-modern-container w-100">
+                <div class="chatbot-header">
+                    <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                    <img src="logo.png" alt="TanamAI Logo" class="chatbot-avatar-img" />
+                    <div>
+                        <div class="chatbot-greeting">Hai! Saya TanamAI. Bagaimana saya boleh membantu anda hari ini?</div>
+                    </div>
+                </div>
+                <div class="chatbot-suggestions mb-2">
+                    <button class="chatbot-chip" type="button">Tips Baja</button>
+                    <button class="chatbot-chip" type="button">Cuaca Hari Ini</button>
+                    <button class="chatbot-chip" type="button">Masalah Perosak</button>
+                    <button class="chatbot-chip" type="button">Harga Pasaran</button>
+                </div>
+                <div id="chatbotMessages" class="chatbot-modern-messages"></div>
+                <div id="chatbotInputBar" class="mt-2">
+                    <form id="chatbotForm" class="chatbot-modern-inputbar">
+                        <div class="chatbot-input-row">
+                            <textarea id="chatbotInput" placeholder="Tanya apa-apa tentang tanaman..." autocomplete="off" required rows="2"></textarea>
+                            <button type="submit" class="chatbot-modern-send">Hantar</button>
+                        </div>
+                        <button type="button" id="chatbotMicBtn" class="chatbot-modern-mic" title="Rakaman suara"><i class="bi bi-mic"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Price Screen -->
+    <div id="marketScreen" class="screen d-none">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link p-0 me-2" onclick="showScreen('dashboardScreen')"><i class="bi bi-arrow-left"></i></button>
+                <h5 class="mb-0">Keadaan Pasaran Terkini</h5>
+            </div>
+            <div id="marketTrendSummary" class="alert alert-info mb-3"></div>
+            <div class="mb-3 d-flex align-items-center">
+                <select id="marketTypeSelect" class="form-select w-auto me-2">
+                    <option value="sayur">Sayur</option>
+                    <option value="buah">Buah</option>
+                </select>
+            </div>
+            <div class="market-table-container">
+                <div class="table-responsive">
+                    <table class="table market-table">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Harga (RM/kg)</th>
+                                <th>Daerah</th>
+                                <th>Kemaskini</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marketPriceTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="navbar fixed-bottom navbar-light bg-white border-top d-md-none">
+        <div class="container d-flex justify-content-around">
+            <button class="nav-btn" onclick="showScreen('dashboardScreen')"><i class="bi bi-house-door"></i><div>Laman Utama</div></button>
+            <button class="nav-btn" onclick="showScreen('activityScreen')"><i class="bi bi-list-task"></i><div>Aktiviti</div></button>
+            <button class="nav-btn" onclick="showScreen('alertsScreen')"><i class="bi bi-bell"></i><div>Amaran</div></button>
+            <button class="nav-btn" onclick="showScreen('marketScreen')"><i class="bi bi-bar-chart"></i><div>Pasaran</div></button>
+            <button class="nav-btn" onclick="showScreen('rewardsScreen')"><i class="bi bi-gift"></i><div>Ganjaran</div></button>
+            <button class="nav-btn" onclick="showScreen('profileScreen')"><i class="bi bi-person"></i><div>Profil</div></button>
+            <button class="nav-btn" onclick="showScreen('chatbotScreen')"><i class="bi bi-robot"></i><div>Tanya TanamAI</div></button>
+        </div>
+    </nav>
+
+    <!-- Add floating action button for Log New Activity -->
+    <button class="fab d-md-none" onclick="showScreen('logActivityScreen')">
+        <i class="bi bi-plus"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // Function to format date in Bahasa Malaysia
+        function formatDateInMalay() {
+            const now = new Date();
+            const days = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+            
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            return `${day}, ${date} ${month} ${year}`;
+        }
+
+        // Update the date display when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateElement = document.getElementById('todayDate');
+            if (dateElement) {
+                dateElement.textContent = formatDateInMalay();
+            }
+        });
+    </script>
+    <script src="/app.js"></script>
+</body>
+</html> 
