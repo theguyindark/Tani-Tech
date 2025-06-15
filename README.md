@@ -41,19 +41,17 @@ A comprehensive agricultural platform built for Malaysian farmers, focusing on a
 
 ## Screenshots
 
-### Web Interface
-![TaniTech Web Dashboard](screenshots/dashboard.png)
-*Main dashboard showing farmer's activities and weather alerts*
+| Web Dashboard | TanamAI Chatbot |
+|:-------------:|:---------------:|
+| ![Dashboard](screenshots/dashboard.png) | ![Chatbot](screenshots/chat.png) |
 
-![TanamAI Chat Interface](screenshots/chat.png)
-*AI-powered chatbot interface for farming advice*
+*Main dashboard and AI-powered chatbot interface for farming advice*
 
-### Mobile Experience
-![USSD Menu](screenshots/ussd.png)
-*USSD menu interface for basic phones*
+| Mobile Alerts & Community | USSD Menu |
+|:------------------------:|:---------:|
+| ![Mobile Alerts](screenshots/mobile_alerts.png) | ![USSD](screenshots/ussd.png) |
 
-![QR Code Scanner](screenshots/qr.png)
-*QR code scanning for quick data access*
+*Mobile experience: community alerts and USSD menu for basic phones*
 
 ## Tech Stack
 
