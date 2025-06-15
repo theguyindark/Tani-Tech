@@ -84,6 +84,10 @@ A comprehensive agricultural platform built for Malaysian farmers, focusing on a
    TWILIO_ACCOUNT_SID=your_twilio_sid
    TWILIO_AUTH_TOKEN=your_twilio_token
    TWILIO_MESSAGING_SERVICE_SID=your_messaging_sid
+   FIREBASE_PROJECT_ID=your_firebase_project_id
+   FIREBASE_CLIENT_EMAIL=your_firebase_client_email
+   FIREBASE_PRIVATE_KEY=your_firebase_private_key
+   FIREBASE_DATABASE_URL=your_firebase_database_url
    ```
 
 4. Firebase Setup:
